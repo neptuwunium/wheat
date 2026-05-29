@@ -75,13 +75,13 @@ public sealed class PackageFileSystem : IDisposable {
 
 	public IRentedArray<byte> OpenFile(string path, string platform = "") => OpenFile(path, platform, out _);
 
-	public IRentedArray<byte> OpenFile(string path, string platform, out string ext) {
+	public IRentedArray<byte> OpenFile(string path, string platform, out string modExt) {
 		path = path.ToLower();
 		if (path.Contains('\\', StringComparison.Ordinal)) {
 			path = path.Replace('\\', '/');
 		}
 
-		ext = Path.GetExtension(path).ToLower();
+		modExt = Path.GetExtension(path).ToLower();
 
 		if (Files.TryGetValue(path, out var file)) {
 			return Decompress(ZipFiles[file.ZipIndex].Open(file.ZipEntry));
@@ -101,6 +101,7 @@ public sealed class PackageFileSystem : IDisposable {
 		var hash = XxHash128.HashToUInt128(nameBuffer[..n]);
 		var name = Path.GetFileNameWithoutExtension(path);
 
+		var ext = modExt;
 		switch (ext) {
 			case ".png":
 			case ".jpg":
@@ -122,26 +123,27 @@ public sealed class PackageFileSystem : IDisposable {
 				break;
 			case ".prefab":
 			case ".world":
+				modExt = $".{platform}{ext}";
 				ext = $".{platform}.scene";
 				break;
 			case ".fbx":
-				ext = ".mesh";
+				ext = modExt = ".mesh";
 				break;
 			case ".fbxphys":
-				ext = ".phys";
+				ext = modExt = ".phys";
 				break;
 			case ".fbxskel":
-				ext = ".skel";
+				ext = modExt = ".skel";
 				break;
 			case ".fbxtriphys":
-				ext = ".triphys";
+				ext = modExt = ".triphys";
 				break;
 			case ".txt":
 				ext = ".html";
 				break;
 			case ".fx":
 			case ".cfx":
-				ext = $".{platform}.fxo";
+				ext = modExt = $".{platform}{ext}";
 				break;
 		}
 
