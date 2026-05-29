@@ -73,11 +73,15 @@ public sealed class PackageFileSystem : IDisposable {
 		}
 	}
 
-	public IRentedArray<byte> OpenFile(string path, string shadingPlatform = "dx12") {
+	public IRentedArray<byte> OpenFile(string path, string platform = "") => OpenFile(path, platform, out _);
+
+	public IRentedArray<byte> OpenFile(string path, string platform, out string ext) {
 		path = path.ToLower();
 		if (path.Contains('\\', StringComparison.Ordinal)) {
 			path = path.Replace('\\', '/');
 		}
+
+		ext = Path.GetExtension(path).ToLower();
 
 		if (Files.TryGetValue(path, out var file)) {
 			return Decompress(ZipFiles[file.ZipIndex].Open(file.ZipEntry));
@@ -96,7 +100,6 @@ public sealed class PackageFileSystem : IDisposable {
 		var n = Encoding.UTF8.GetBytes(path, nameBuffer);
 		var hash = XxHash128.HashToUInt128(nameBuffer[..n]);
 		var name = Path.GetFileNameWithoutExtension(path);
-		var ext = Path.GetExtension(path).ToLower();
 
 		switch (ext) {
 			case ".png":
@@ -119,7 +122,7 @@ public sealed class PackageFileSystem : IDisposable {
 				break;
 			case ".prefab":
 			case ".world":
-				ext = ".client.scene";
+				ext = $".{platform}.scene";
 				break;
 			case ".fbx":
 				ext = ".mesh";
@@ -138,7 +141,7 @@ public sealed class PackageFileSystem : IDisposable {
 				break;
 			case ".fx":
 			case ".cfx":
-				ext = $".{shadingPlatform}.pc.fxo";
+				ext = $".{platform}.fxo";
 				break;
 		}
 
