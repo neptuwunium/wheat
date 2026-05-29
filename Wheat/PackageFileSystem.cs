@@ -73,9 +73,9 @@ public sealed class PackageFileSystem : IDisposable {
 		}
 	}
 
-	public IRentedArray<byte> OpenFile(string path, string platform = "") => OpenFile(path, platform, out _);
+	public IRentedArray<byte> OpenFile(string path, string platform = "") => OpenFile(ref path, platform, out _);
 
-	public IRentedArray<byte> OpenFile(string path, string platform, out string modExt) {
+	public IRentedArray<byte> OpenFile(ref string path, string platform, out string modExt) {
 		path = path.ToLower();
 		if (path.Contains('\\', StringComparison.Ordinal)) {
 			path = path.Replace('\\', '/');
@@ -96,11 +96,25 @@ public sealed class PackageFileSystem : IDisposable {
 			return Decompress(IRentedArray<byte>.Empty);
 		}
 
+		var old = path;
+		path = TransformPath(path, platform, out modExt);
+		Log.Debug("Transforming {OldPath} to {Path}", old, path);
+
+		if (Files.TryGetValue(path, out file)) {
+			return Decompress(ZipFiles[file.ZipIndex].Open(file.ZipEntry));
+		}
+
+		Log.Warning("File {Path} ({OldPath}) not found", path, old);
+		return Decompress(IRentedArray<byte>.Empty);
+	}
+
+	public static string TransformPath(string path, string platform, out string modExt) {
 		var nameBuffer = (stackalloc byte[Encoding.UTF8.GetMaxByteCount(path.Length)]);
 		var n = Encoding.UTF8.GetBytes(path, nameBuffer);
 		var hash = XxHash128.HashToUInt128(nameBuffer[..n]);
 		var name = Path.GetFileNameWithoutExtension(path);
 
+		modExt = Path.GetExtension(path).ToLower();
 		var ext = modExt;
 		switch (ext) {
 			case ".png":
@@ -110,10 +124,12 @@ public sealed class PackageFileSystem : IDisposable {
 			case ".tiff":
 			case ".exr":
 			case ".layertex":
+			case ".svg":
+				modExt = $"{ext}.dds";
 				ext = ".dds";
 				break;
-			case ".svg":
-				ext = ".svgf";
+			case ".svgf":
+				modExt = ".svg";
 				break;
 			case ".po":
 				ext = ".mo";
@@ -138,24 +154,13 @@ public sealed class PackageFileSystem : IDisposable {
 			case ".fbxtriphys":
 				ext = modExt = ".triphys";
 				break;
-			case ".txt":
-				ext = ".html";
-				break;
 			case ".fx":
 			case ".cfx":
-				ext = modExt = $".{platform}{ext}";
+				modExt = $".{platform}{ext}";
+				ext = $".{platform}.fxo";
 				break;
 		}
 
-		var old = path;
-		path = $".assets/output/{name}{hash.High:x16}{hash.Low:x16}{ext}";
-		Log.Debug("Transforming {OldPath} to {Path}", old, path);
-
-		if (Files.TryGetValue(path, out file)) {
-			return Decompress(ZipFiles[file.ZipIndex].Open(file.ZipEntry));
-		}
-
-		Log.Warning("File {Path} ({OldPath}) not found", path, old);
-		return Decompress(IRentedArray<byte>.Empty);
+		return $".assets/output/{name}{hash.High:x16}{hash.Low:x16}{ext}";
 	}
 }
