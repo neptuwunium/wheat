@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 SPDX-FileCopyrightText: 2026 Neptuwunium
 
 SPDX-License-Identifier: EUPL-1.2
@@ -6,19 +6,19 @@ SPDX-License-Identifier: EUPL-1.2
 
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net11.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net11.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="4.3.1" />
-    <PackageReference Include="System.IO.Hashing" Version="11.0.0-preview.4.26230.115" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="4.3.1"/>
+		<PackageReference Include="System.IO.Hashing" Version="11.0.0-preview.4.26230.115"/>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Neptune\Charon\Charon.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Neptune\Charon\Charon.csproj"/>
+	</ItemGroup>
 
 </Project>

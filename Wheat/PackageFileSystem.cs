@@ -12,7 +12,6 @@ using Pluto.Extensions;
 using Pluto.IO.Binary;
 using Pluto.IO.FileSystem;
 using Serilog;
-using ZipFile = Charon.Compression.Zip.ZipFile;
 
 namespace Wheat;
 
@@ -28,6 +27,16 @@ public sealed class PackageFileSystem : IDisposable {
 	public List<ZipFile> ZipFiles { get; set; }
 	public Dictionary<string, (int ZipIndex, ZipEntry ZipEntry)> Files { get; set; }
 
+	public void Dispose() {
+		Files.Clear();
+		ObjectPool<Dictionary<string, (int ZipIndex, ZipEntry ZipEntry)>>.Return(Files);
+		Files = null!;
+
+		ZipFiles.Clear();
+		ObjectPool<List<ZipFile>>.Return(ZipFiles);
+		ZipFiles = null!;
+	}
+
 	public void Mount(string path) {
 		foreach (var zipPath in new FileEnumerator(path, "*.zip")) {
 			var zip = new ZipFile(zipPath);
@@ -38,16 +47,6 @@ public sealed class PackageFileSystem : IDisposable {
 				Files[entry.Path] = (index, entry);
 			}
 		}
-	}
-
-	public void Dispose() {
-		Files.Clear();
-		ObjectPool<Dictionary<string, (int ZipIndex, ZipEntry ZipEntry)>>.Return(Files);
-		Files = null!;
-
-		ZipFiles.Clear();
-		ObjectPool<List<ZipFile>>.Return(ZipFiles);
-		ZipFiles = null!;
 	}
 
 	public static IRentedArray<byte> Decompress(IRentedArray<byte> data) {

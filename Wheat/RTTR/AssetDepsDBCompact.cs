@@ -8,9 +8,8 @@ namespace Wheat.RTTR;
 
 // ReSharper disable once InconsistentNaming
 public record AssetDepsDBCompact : RTTRJsonObject {
-	public override bool Validate() => RTTRType == nameof(AssetDepsDBCompact);
-
 	public List<AssetDepsCompact> Assets { get; set; } = [];
+	public override bool Validate() => RTTRType == nameof(AssetDepsDBCompact);
 
 	public override string ToString() => $"{nameof(AssetDepsDBCompact)} {{ {Assets.Count} assets }}";
 }

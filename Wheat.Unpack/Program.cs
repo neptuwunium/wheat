@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Neptuwunium
+// SPDX-FileCopyrightText: 2026 Neptuwunium
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -46,7 +46,7 @@ foreach (var asset in assetDeps.Assets) {
 	var selectors = Path.GetExtension(asset.Asset) switch {
 		".fx" or ".cfx" => platformsShader,
 		".world" or ".prefab" => platformsPrefab,
-		_ => platformsDefault
+		_ => platformsDefault,
 	};
 
 	foreach (var platform in selectors) {
