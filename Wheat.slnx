@@ -6,9 +6,10 @@ SPDX-License-Identifier: EUPL-1.2
 
 <Solution>
 	<Folder Name="/Neptune/">
-		<Project Path="Neptune/Pluto/Pluto.csproj"/>
-		<Project Path="Neptune/Charon/Charon.csproj"/>
+		<Project Path="Neptune/Pluto/Pluto.csproj" />
+		<Project Path="Neptune/Charon/Charon.csproj" />
+		<Project Path="Neptune/Triton/Triton.csproj" />
 	</Folder>
-	<Project Path="Wheat.Unpack/Wheat.Unpack.csproj"/>
-	<Project Path="Wheat/Wheat.csproj"/>
+	<Project Path="Wheat.Unpack/Wheat.Unpack.csproj" />
+	<Project Path="Wheat/Wheat.csproj" />
 </Solution>

@@ -19,6 +19,7 @@ SPDX-License-Identifier: EUPL-1.2
 
 	<ItemGroup>
 		<ProjectReference Include="..\Neptune\Charon\Charon.csproj"/>
+		<ProjectReference Include="..\Neptune\Triton\Triton.csproj"/>
 	</ItemGroup>
 
 </Project>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using Pluto.CommandLine;
 using Pluto.Extensions;
+using Pluto.IO.Binary;
 using Serilog;
 using Wheat;
 using Wheat.RTTR;
@@ -64,12 +65,11 @@ foreach (var asset in assetDeps.Assets) {
 		}
 
 		normalizedPath = Path.ChangeExtension(normalizedPath, ext);
-		var dir = Path.GetDirectoryName(normalizedPath);
-
 		Log.Information("Exporting {Path}", Path.ChangeExtension(asset.Asset, ext));
+
+		var dir = Path.GetDirectoryName(normalizedPath);
 		Directory.CreateDirectory(dir ?? output);
-		using var stream = new FileStream(normalizedPath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-		stream.Write(data.Span);
+		ExtractFile(data, normalizedPath);
 	}
 }
 
@@ -88,6 +88,21 @@ foreach (var assetPath in vfs.Files.Keys.Where(assetPath => !paths.Contains(asse
 
 	var dir = Path.GetDirectoryName(normalizedPath);
 	Directory.CreateDirectory(dir ?? output);
-	using var stream = new FileStream(normalizedPath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+	ExtractFile(data, normalizedPath);
+}
+
+return;
+
+void ExtractFile(IRentedArray<byte> data, string path) {
+	using var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+	stream.SetLength(0);
+
+	if (Path.GetExtension(path) == ".dds") {
+		using var dds = new SuperCompressedDDS(data);
+		using var writer = new StreamBinaryWriter(stream);
+		dds.Write(writer);
+		return;
+	}
+
 	stream.Write(data.Span);
 }
