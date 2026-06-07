@@ -16,7 +16,9 @@ public record ReplayLoadPrefabEvent : ReplayEvent {
 
 	// unhashed asset path
 	public string PrefabPath { get; set; }
+
 	public uint ChildIndex { get; set; }
+
 	// raw prefab init data
 	public IRentedArray<byte> PrefabInitData { get; set; }
 

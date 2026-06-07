@@ -21,8 +21,10 @@ public record ReplayCustomEvent : ReplayEvent {
 	}
 
 	public int TypeId { get; set; }
+
 	// look me up in rttr
 	public string TypeName { get; set; }
+
 	// raw event type data
 	public IRentedArray<byte> EventData { get; set; }
 

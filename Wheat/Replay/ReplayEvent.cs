@@ -27,18 +27,18 @@ public abstract record ReplayEvent : IDisposable {
 	public static ReplayEvent Read(BufferBinaryReader reader, Replay replay) {
 		var type = reader.Peek<ReplayEventType>();
 
-		Debug.Assert(type is not (ReplayEventType.Packet1 or ReplayEventType.Packet3 or ReplayEventType.Packet4));
+		Debug.Assert(type is not (ReplayEventType.EditorPacket or ReplayEventType.ClientNoUIPacket or ReplayEventType.ServerUIPacket));
 
 		// seems to only send Packet2 (ClientPacket) and Packet5
 		return type switch {
 			ReplayEventType.PlayerConnect or ReplayEventType.PlayerDisconnect => new ReplayPlayerEvent(reader, replay),
-			ReplayEventType.Packet1 or ReplayEventType.ClientPacket
-				or ReplayEventType.Packet3 or ReplayEventType.Packet4
-				or ReplayEventType.Packet5 => new ReplayPacketEvent(reader, replay),
-			ReplayEventType.LoadPrefab => new ReplayLoadPrefabEvent(reader, replay),
-			ReplayEventType.InputEvent => new ReplayInputEvent(reader, replay),
-			ReplayEventType.CustomEvent => new ReplayCustomEvent(reader, replay),
-			_ => throw new NotSupportedException()
+			ReplayEventType.EditorPacket
+				or ReplayEventType.ClientUIPacket or ReplayEventType.ClientNoUIPacket
+				or ReplayEventType.ServerUIPacket or ReplayEventType.ServerNoUIPacket => new ReplayPacketEvent(reader, replay),
+			ReplayEventType.Prefab => new ReplayLoadPrefabEvent(reader, replay),
+			ReplayEventType.Input => new ReplayInputEvent(reader, replay),
+			ReplayEventType.Custom => new ReplayCustomEvent(reader, replay),
+			_ => throw new NotSupportedException(),
 		};
 	}
 

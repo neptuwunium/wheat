@@ -31,11 +31,15 @@ public record ReplayHeader {
 	public ulong InputHash { get; set; }
 	public ulong MessageBusHash { get; set; }
 	public ulong PredefinedReplicablesHash { get; set; }
+
 	public DateTimeOffset Timestamp { get; set; }
+
 	// the format these schemas are in is a little bit cursed...
 	public string ReplicationSchema { get; set; }
 	public string InputSchema { get; set; }
+
 	public string MessageBusSchema { get; set; }
+
 	// [replicable_id=index,...]
 	public string PredefinedReplicables { get; set; }
 }

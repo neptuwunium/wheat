@@ -8,4 +8,5 @@ SPDX-License-Identifier: EUPL-1.2
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DDS/@EntryIndexedValue">DDS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=RTTR/@EntryIndexedValue">RTTR</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=UI/@EntryIndexedValue">UI</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=US/@EntryIndexedValue">US</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Replicables/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

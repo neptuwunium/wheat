@@ -26,6 +26,7 @@ public record ReplayPacketEvent : ReplayEvent {
 	}
 
 	public ulong PacketId { get; set; }
+
 	// this is a packet, refer to ReplicationSchema (or MessageBusSchema?) in header
 	public List<IRentedArray<byte>> Payloads { get; set; }
 
